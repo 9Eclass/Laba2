@@ -1,0 +1,310 @@
+23. Посчитать количество чисел, являющихся полными квадратами 
+(их корень является целым числом).
+1. C++
+#include <iostream>
+#include <cmath>
+using namespace std;
+bool isPerfectSquare(int x) {
+    if (x < 0) return false;
+    int sqrt_x = sqrt(x);
+    return sqrt_x * sqrt_x == x;
+}
+int main() {
+    int n, count = 0;
+    cout << "Введите количество чисел: ";
+    cin >> n;
+    for (int i = 0; i < n; ++i) {
+        int num;
+        cout << "Введите число: ";
+        cin >> num;
+        if (isPerfectSquare(num)) {
+            count++;
+        }
+    }
+    cout << "Количество полных квадратов: " << count << endl;
+    return 0;
+}
+ 
+2. Kotlin
+import kotlin.math.sqrt
+fun isPerfectSquare(x: Int): Boolean {
+    if (x < 0) return false
+    val sqrtX = sqrt(x.toDouble()).toInt()
+    return sqrtX * sqrtX == x
+}
+fun main() {
+    print("Введите количество чисел: ")
+    val n = readLine()!!.toInt()
+    var count = 0
+    for (i in 1..n) {
+        print("Введите число: ")
+        val num = readLine()!!.toInt()
+        if (isPerfectSquare(num)) {
+            count++
+        }
+    }
+    println("Количество полных квадратов: $count")
+}
+ 
+3. C#
+using System;
+using System.Text; 
+
+class Program 
+{
+    static bool IsPerfectSquare(int x) 
+    {
+        if (x < 0) return false;
+        int sqrtX = (int)Math.Sqrt(x);
+        return sqrtX * sqrtX == x;
+    }
+    
+    static void Main() 
+    {
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.InputEncoding = Encoding.UTF8;
+        Console.Write("Введите количество чисел: ");
+        int n;
+        while (!int.TryParse(Console.ReadLine(), out n) || n <= 0)
+        {
+            Console.Write("Ошибка! Введите положительное целое число: ");
+        }
+        int count = 0;
+        for (int i = 0; i < n; i++) 
+        {
+            Console.Write($"Введите число #{i+1}: ");
+            int num;
+            while (!int.TryParse(Console.ReadLine(), out num))
+            {
+                Console.Write("Ошибка! Введите целое число: ");
+            } 
+            if (IsPerfectSquare(num)) 
+            {
+                count++;
+            }
+        }
+        Console.WriteLine($"Количество полных квадратов: {count}");
+    }
+}
+ 
+4. PHP
+<?
+function isPerfectSquare($x) {
+    if ($x < 0) return false;
+    $sqrtX = (int)sqrt($x);
+    return $sqrtX * $sqrtX == $x;
+}
+echo "Введите количество чисел: ";
+$n = (int)trim(fgets(STDIN));
+$count = 0;
+for ($i = 0; $i < $n; $i++) {
+    echo "Введите число: ";
+    $num = (int)trim(fgets(STDIN));
+    if (isPerfectSquare($num)) {
+        $count++;
+    }
+}
+echo "Количество полных квадратов: $count\n";
+?>
+ 
+5. Rust
+use std::io;
+fn is_perfect_square(x: i32) -> bool {
+    if x < 0 {
+        return false;
+    }
+    let sqrt_x = (x as f64).sqrt() as i32;
+    sqrt_x * sqrt_x == x
+}
+fn main() {
+    println!("Введите количество чисел: ");
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let n: i32 = input.trim().parse().unwrap();
+    let mut count = 0;
+    for _ in 0..n {
+        println!("Введите число: ");
+        input.clear();
+        io::stdin().read_line(&mut input).unwrap();
+        let num: i32 = input.trim().parse().unwrap();
+        if is_perfect_square(num) {
+            count += 1;
+        }
+    }
+    println!("Количество полных квадратов: {}", count);
+}
+ 
+6. Go 
+package main
+import (
+	"fmt"
+	"math"
+)
+func isPerfectSquare(x int) bool {
+	if x < 0 {
+		return false
+	}
+	sqrtX := int(math.Sqrt(float64(x)))
+	return sqrtX*sqrtX == x
+}
+func main() {
+	var n, count int
+	fmt.Print("Введите количество чисел: ")
+	fmt.Scan(&n)
+	for i := 0; i < n; i++ {
+		var num int
+		fmt.Print("Введите число: ")
+		fmt.Scan(&num)
+		if isPerfectSquare(num) {
+			count++
+		}
+	}
+	fmt.Printf("Количество полных квадратов: %d\n", count)
+}
+ 
+7. TypeScript
+function isPerfectSquare(x: number): boolean {
+    if (x < 0) return false;
+    const sqrtX = Math.floor(Math.sqrt(x));
+    return sqrtX * sqrtX === x;
+}
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+readline.question('Введите количество чисел: ', (nStr: string) => {
+    const n = parseInt(nStr);
+    let count = 0;
+    let i = 0;
+    const askNumber = () => {
+        if (i < n) {
+            readline.question('Введите число: ', (numStr: string) => {
+                const num = parseInt(numStr);
+                if (isPerfectSquare(num)) {
+                    count++;
+                }
+                i++;
+                askNumber();
+            });
+        } else {
+            console.log(`Количество полных квадратов: ${count}`);
+            readline.close();
+        }
+    };
+    askNumber();
+});
+ 
+8. Swift
+import Foundation
+func isPerfectSquare(_ x: Int) -> Bool {
+    if x < 0 {
+        return false
+    }
+    let sqrtX = Int(Double(x).squareRoot())
+    return sqrtX * sqrtX == x
+}
+print("Введите количество чисел: ", terminator: "")
+guard let n = Int(readLine() ?? "") else { fatalError() }
+var count = 0
+for _ in 0..<n {
+    print("Введите число: ", terminator: "")
+    guard let num = Int(readLine() ?? "") else { fatalError() }
+    if isPerfectSquare(num) {
+        count += 1
+    }
+}
+print("Количество полных квадратов: \(count)")
+ 
+9. JavaScript
+function isPerfectSquare(x) {
+    if (x < 0) return false;
+    const sqrtX = Math.floor(Math.sqrt(x));
+    return sqrtX * sqrtX === x;
+}
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+readline.question('Введите количество чисел: ', nStr => {
+    const n = parseInt(nStr);
+    let count = 0;
+    let i = 0;
+    const askNumber = () => {
+        if (i < n) {
+            readline.question('Введите число: ', numStr => {
+                const num = parseInt(numStr);
+                if (isPerfectSquare(num)) {
+                    count++;
+                }
+                i++;
+                askNumber();
+            });
+        } else {
+            console.log(`Количество полных квадратов: ${count}`);
+            readline.close();
+        }
+    };
+    askNumber();
+});
+ 
+10. Python
+import math
+def is_perfect_square(x):
+    if x < 0:
+        return False
+    sqrt_x = int(math.sqrt(x))
+    return sqrt_x * sqrt_x == x
+n = int(input("Введите количество чисел: "))
+count = 0
+for _ in range(n):
+    num = int(input("Введите число: "))
+    if is_perfect_square(num):
+        count += 1
+print(f"Количество полных квадратов: {count}")
+ 
+11. Java
+import java.util.Scanner;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+public class Main {
+    static boolean isPerfectSquare(int x) {
+        if (x < 0) return false;
+        int sqrtX = (int) Math.sqrt(x);
+        return sqrtX * sqrtX == x;
+    }
+    public static void main(String[] args) {
+        try {
+            System.setOut(new PrintStream(System.out, true, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("Ошибка кодировки: " + e.getMessage());
+        }
+        Scanner scanner = new Scanner(System.in, "UTF-8");
+        System.out.print("Введите количество чисел: ");
+        int n = scanner.nextInt();
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            System.out.print("Введите число: ");
+            int num = scanner.nextInt();
+            if (isPerfectSquare(num)) {
+                count++;
+            }
+        }
+        System.out.println("Количество полных квадратов: " + count);
+    }
+}
+ 
+12. Ruby
+def is_perfect_square(x)
+  return false if x < 0
+  sqrt_x = Integer.sqrt(x)
+  sqrt_x * sqrt_x == x
+end
+print "Введите количество чисел: "
+n = gets.chomp.to_i
+count = 0
+n.times do
+  print "Введите число: "
+  num = gets.chomp.to_i
+  count += 1 if is_perfect_square(num)
+end
+puts "Количество полных квадратов: #{count}"

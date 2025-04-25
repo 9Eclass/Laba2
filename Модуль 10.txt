@@ -1,0 +1,499 @@
+3. Дан массив пар, содержащих начальный и конечный пункты 
+пребывания. Вернуть итоговый конечный пункт самой длинной цепочки 
+следования.
+1. C++
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include <string>
+using namespace std;
+string dfs(const string& start, unordered_map<string, string>& graph) {
+    if (graph.find(start) == graph.end()) return start;
+    return dfs(graph[start], graph);
+}
+string findFinalDestination(const vector<pair<string, string>>& routes) {
+    unordered_map<string, string> graph;
+    unordered_set<string> destinations;
+
+    for (const auto& route : routes) {
+        if (route.first == route.second) return "Обратитесь к специалисту";
+        graph[route.first] = route.second;
+        destinations.insert(route.second);
+    }
+    string startPoint;
+    for (const auto& route : routes) {
+        if (destinations.find(route.first) == destinations.end()) {
+            startPoint = route.first;
+            break;
+        }
+    }
+    if (startPoint.empty()) return "Обратитесь к специалисту";
+    return dfs(startPoint, graph);
+}
+int main() {
+    vector<pair<string, string>> routes;
+    int n;
+    cout << "Введите количество пар: ";
+    cin >> n;
+    cin.ignore();
+    for (int i = 0; i < n; ++i) {
+        string start, end;
+        cout << "Введите начальный и конечный пункты через пробел: ";
+        cin >> start >> end;
+        routes.emplace_back(start, end);
+    }
+    string result = findFinalDestination(routes);
+    cout << "Output: " << result << endl;
+    return 0;
+}
+ 
+2. Kotlin
+fun dfs(start: String, graph: Map<String, String>): String {
+    return graph[start]?.let { dfs(it, graph) } ?: start
+}
+fun findFinalDestination(routes: List<Pair<String, String>>): String {
+    val graph = mutableMapOf<String, String>()
+    val destinations = mutableSetOf<String>()
+    for (route in routes) {
+        if (route.first == route.second) return "Обратитесь к специалисту"
+        graph[route.first] = route.second
+        destinations.add(route.second)
+    }
+
+    val startPoint = routes.firstOrNull { it.first !in destinations }?.first
+        ?: return "Обратитесь к специалисту"
+    return dfs(startPoint, graph)
+}
+fun main() {
+    val routes = mutableListOf<Pair<String, String>>()
+    print("Введите количество пар: ")
+    val n = readLine()!!.toInt()
+    for (i in 1..n) {
+        print("Введите начальный и конечный пункты через пробел: ")
+        val (start, end) = readLine()!!.split(" ")
+        routes.add(start to end)
+    }
+    val result = findFinalDestination(routes)
+    println("Output: $result")
+}
+ 
+3. C#
+using System;
+using System.Collections.Generic;
+
+class Program {
+    static string Dfs(string start, Dictionary<string, string> graph) {
+        return graph.ContainsKey(start) ? Dfs(graph[start], graph) : start;
+    }
+    static string FindFinalDestination(List<(string, string)> routes) {
+        var graph = new Dictionary<string, string>();
+        var destinations = new HashSet<string>();
+        foreach (var route in routes) {
+            if (route.Item1 == route.Item2) return "Обратитесь к специалисту";
+            graph[route.Item1] = route.Item2;
+            destinations.Add(route.Item2);
+        }
+        string startPoint = null;
+        foreach (var route in routes) {
+            if (!destinations.Contains(route.Item1)) {
+                startPoint = route.Item1;
+                break;
+            }
+        }
+
+        if (startPoint == null) return "Обратитесь к специалисту";
+        return Dfs(startPoint, graph);
+    }
+    static void Main() {
+        var routes = new List<(string, string)>();
+        Console.Write("Введите количество пар: ");
+        int n = int.Parse(Console.ReadLine());
+        for (int i = 0; i < n; i++) {
+            Console.Write("Введите начальный и конечный пункты через пробел: ");
+            var parts = Console.ReadLine().Split();
+            routes.Add((parts[0], parts[1]));
+        }
+        string result = FindFinalDestination(routes);
+        Console.WriteLine($"Output: {result}");
+    }
+}
+4. PHP
+<?
+function dfs($start, $graph) {
+    return array_key_exists($start, $graph) ? dfs($graph[$start], $graph) : $start;
+}
+function findFinalDestination($routes) {
+    $graph = [];
+    $destinations = [];
+    foreach ($routes as $route) {
+        if ($route[0] == $route[1]) return "Обратитесь к специалисту";
+        $graph[$route[0]] = $route[1];
+        $destinations[$route[1]] = true;
+    }
+    $startPoint = null;
+    foreach ($routes as $route) {
+        if (!array_key_exists($route[0], $destinations)) {
+            $startPoint = $route[0];
+            break;
+        }
+    }
+    if ($startPoint === null) return "Обратитесь к специалисту";
+    return dfs($startPoint, $graph);
+}
+echo "Введите количество пар: ";
+$n = intval(trim(fgets(STDIN)));
+$routes = [];
+for ($i = 0; $i < $n; $i++) {
+    echo "Введите начальный и конечный пункты через пробел: ";
+    $input = explode(" ", trim(fgets(STDIN)));
+    $routes[] = [$input[0], $input[1]];
+}
+$result = findFinalDestination($routes);
+echo "Output: $result\n";
+?>
+ 
+5. Rust
+use std::collections::{HashMap, HashSet};
+use std::io;
+fn dfs(start: &str, graph: &HashMap<String, String>) -> String {
+    match graph.get(start) {
+        Some(next) => dfs(next, graph),
+        None => start.to_string(),
+    }
+}
+fn find_final_destination(routes: &[(String, String)]) -> String {
+    let mut graph = HashMap::new();
+    let mut destinations = HashSet::new();
+    for route in routes {
+        if route.0 == route.1 {
+            return "Обратитесь к специалисту".to_string();
+        }
+        graph.insert(route.0.clone(), route.1.clone());
+        destinations.insert(route.1.clone());
+    }
+    let start_point = routes.iter().find(|r| !destinations.contains(&r.0));
+    match start_point {
+        Some(route) => dfs(&route.0, &graph),
+        None => "Обратитесь к специалисту".to_string(),
+    }
+}
+fn main() {
+    let mut routes = Vec::new();
+    println!("Введите количество пар: ");
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let n: usize = input.trim().parse().unwrap();
+    for _ in 0..n {
+        println!("Введите начальный и конечный пункты через пробел: ");
+        input.clear();
+        io::stdin().read_line(&mut input).unwrap();
+        let parts: Vec<&str> = input.trim().split_whitespace().collect();
+        routes.push((parts[0].to_string(), parts[1].to_string()));
+    }
+    let result = find_final_destination(&routes);
+    println!("Output: {}", result);
+}
+ 
+6. Go 
+package main
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+func dfs(start string, graph map[string]string) string {
+	if next, exists := graph[start]; exists {
+		return dfs(next, graph)
+	}
+	return start
+}
+func findFinalDestination(routes [][]string) string {
+	graph := make(map[string]string)
+	destinations := make(map[string]bool)
+
+	for _, route := range routes {
+		if route[0] == route[1] {
+			return "Обратитесь к специалисту"
+		}
+		graph[route[0]] = route[1]
+		destinations[route[1]] = true
+	}
+	var startPoint string
+	for _, route := range routes {
+		if !destinations[route[0]] {
+			startPoint = route[0]
+			break
+		}
+	}
+	if startPoint == "" {
+		return "Обратитесь к специалисту"
+	}
+	return dfs(startPoint, graph)
+}
+func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Print("Введите количество пар: ")
+	scanner.Scan()
+	n := 0
+	fmt.Sscan(scanner.Text(), &n)
+	routes := make([][]string, n)
+	for i := 0; i < n; i++ {
+		fmt.Print("Введите начальный и конечный пункты через пробел: ")
+		scanner.Scan()
+		parts := strings.Fields(scanner.Text())
+		routes[i] = []string{parts[0], parts[1]}
+	}
+
+	result := findFinalDestination(routes)
+	fmt.Println("Output:", result)
+}
+ 
+7. TypeScript
+function dfs(start: string, graph: Map<string, string>): string {
+    return graph.has(start) ? dfs(graph.get(start)!, graph) : start;
+}
+function findFinalDestination(routes: [string, string][]): string {
+    const graph = new Map<string, string>();
+    const destinations = new Set<string>();
+    for (const [start, end] of routes) {
+        if (start === end) return "Обратитесь к специалисту";
+        graph.set(start, end);
+        destinations.add(end);
+    }
+    const startPoint = routes.find(([start]) => !destinations.has(start))?.[0];
+    if (!startPoint) return "Обратитесь к специалисту";
+    return dfs(startPoint, graph);
+}
+
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+readline.question('Введите количество пар: ', (nStr: string) => {
+    const n = parseInt(nStr);
+    const routes: [string, string][] = [];
+
+    let count = 0;
+    const askRoute = () => {
+        if (count < n) {
+            readline.question('Введите начальный и конечный пункты через пробел: ', (input: string) => {
+                const [start, end] = input.split(' ');
+                routes.push([start, end]);
+                count++;
+                askRoute();
+            });
+        } else {
+            const result = findFinalDestination(routes);
+            console.log(`Output: ${result}`);
+            readline.close();
+        }
+    };
+
+    askRoute();
+});
+ 
+8. Swift
+func dfs(_ start: String, _ graph: [String: String]) -> String {
+    return graph[start].map { dfs($0, graph) } ?? start
+}
+func findFinalDestination(_ routes: [(String, String)]) -> String {
+    var graph = [String: String]()
+    var destinations = Set<String>()
+    for route in routes {
+        if route.0 == route.1 { return "Обратитесь к специалисту" }
+        graph[route.0] = route.1
+        destinations.insert(route.1)
+    }
+    guard let startPoint = routes.first(where: { !destinations.contains($0.0) })?.0 else {
+        return "Обратитесь к специалисту"
+    }
+    return dfs(startPoint, graph)
+}
+print("Введите количество пар: ", terminator: "")
+guard let n = Int(readLine() ?? "") else { fatalError() }
+var routes = [(String, String)]()
+for _ in 0..<n {
+    print("Введите начальный и конечный пункты через пробел: ", terminator: "")
+    let parts = readLine()!.split(separator: " ")
+    routes.append((String(parts[0]), String(parts[1])))
+}
+let result = findFinalDestination(routes)
+print("Output: \(result)")
+ 
+9. JavaScript
+function dfs(start, graph) {
+    return graph.has(start) ? dfs(graph.get(start), graph) : start;
+}
+function findFinalDestination(routes) {
+    const graph = new Map();
+    const destinations = new Set();
+    for (const [start, end] of routes) {
+        if (start === end) return "Обратитесь к специалисту";
+        graph.set(start, end);
+        destinations.add(end);
+    }
+    const startPoint = routes.find(([start]) => !destinations.has(start))?.[0];
+    if (!startPoint) return "Обратитесь к специалисту";
+
+    return dfs(startPoint, graph);
+}
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+readline.question('Введите количество пар: ', nStr => {
+    const n = parseInt(nStr);
+    const routes = [];
+    let count = 0;
+    const askRoute = () => {
+        if (count < n) {
+            readline.question('Введите начальный и конечный пункты через пробел: ', input => {
+                const [start, end] = input.split(' ');
+                routes.push([start, end]);
+                count++;
+                askRoute();
+            });
+        } else {
+            const result = findFinalDestination(routes);
+            console.log(`Output: ${result}`);
+            readline.close();
+        }
+    };
+
+    askRoute();
+});
+ 
+10. Python
+def dfs(start, graph):
+    return dfs(graph[start], graph) if start in graph else start
+def find_final_destination(routes):
+    graph = {}
+    destinations = set()
+    for start, end in routes:
+        if start == end:
+            return "Обратитесь к специалисту"
+        graph[start] = end
+        destinations.add(end)
+
+    start_point = next((start for start, _ in routes if start not in destinations), None)
+    if not start_point:
+        return "Обратитесь к специалисту"
+
+    return dfs(start_point, graph)
+
+n = int(input("Введите количество пар: "))
+routes = []
+for _ in range(n):
+    start, end = input("Введите начальный и конечный пункты через пробел: ").split()
+    routes.append((start, end))
+
+result = find_final_destination(routes)
+print(f"Output: {result}")
+ 
+11. Java
+import java.util.*;
+public class Main {
+    private static String dfs(String start, Map<String, String> graph) {
+        return graph.containsKey(start) ? dfs(graph.get(start), graph) : start;
+    }
+    private static String findFinalDestination(List<Pair<String, String>> routes) {
+        Map<String, String> graph = new HashMap<>();
+        Set<String> destinations = new HashSet<>();
+        for (Pair<String, String> route : routes) {
+            if (route.getFirst().equals(route.getSecond())) {
+                return "Обратитесь к специалисту";
+            }
+            graph.put(route.getFirst(), route.getSecond());
+            destinations.add(route.getSecond());
+        }
+        String startPoint = null;
+        for (Pair<String, String> route : routes) {
+            if (!destinations.contains(route.getFirst())) {
+                startPoint = route.getFirst();
+                break;
+            }
+        }
+        if (startPoint == null) {
+            return "Обратитесь к специалисту";
+        }
+        return dfs(startPoint, graph);
+    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите количество пар: ");
+        int n = scanner.nextInt();
+        scanner.nextLine();
+        List<Pair<String, String>> routes = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            System.out.print("Введите начальный и конечный пункты через пробел: ");
+            String[] parts = scanner.nextLine().split(" ");
+            routes.add(new Pair<>(parts[0], parts[1]));
+        }
+        String result = findFinalDestination(routes);
+        System.out.println("Output: " + result);
+    }
+    static class Pair<A, B> {
+        private final A first;
+        private final B second;
+        public Pair(A first, B second) {
+            this.first = first;
+            this.second = second;
+        }
+        public A getFirst() {
+            return first;
+        }
+        public B getSecond() {
+            return second;
+        }
+    }
+}
+ 
+12. Ruby
+def find_longest_chain(pairs)
+  return nil if pairs.empty?
+  pairs.each do |from, to|
+    if from == to
+      return "Обратитесь к специалисту (найдена петля: #{from} → #{to})"
+    end
+  end
+  graph = {}
+  pairs.each { |from, to| graph[from] = to }
+  longest_end = nil
+  max_length = 0
+  graph.each_key do |start|
+    current = start
+    length = 1
+    visited = { current => true }
+    while graph.key?(current)
+      current = graph[current]
+      if visited[current] # Обнаружен цикл (A → B → C → A)
+        return "Обратитесь к специалисту (найден цикл)"
+      end
+      visited[current] = true
+      length += 1
+    end
+    if length > max_length
+      max_length = length
+      longest_end = current
+    end
+  end
+  longest_end
+end
+puts "Введите количество пар:"
+n = gets.to_i
+
+pairs = []
+puts "Введите пары в формате 'начальный_пункт конечный_пункт':"
+n.times do
+  input = gets.chomp.split
+  until input.size == 2
+    puts "Ошибка! Введите два пункта через пробел:"
+    input = gets.chomp.split
+  end
+  pairs << input
+end
+result = find_longest_chain(pairs)
+puts "Конечный пункт самой длинной цепочки: #{result}"
